@@ -1,0 +1,72 @@
+﻿@model IEnumerable<Product>
+@*or use @model List<Product>*@
+
+@{
+    Layout = "_DashBoardLayout";
+}
+<div class="overview">
+    <div class="title">
+        <i class="uil uil-tachometer-fast-alt"></i>
+        <span class="text">All Product</span>
+    </div>
+</div>
+<div>
+    @if (ViewBag.Update != null)
+    {
+        <div class="alert alert-success" role="alert">
+            @ViewBag.Update
+        </div>
+    }
+    @if (ViewBag.Delete != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            @ViewBag.Delete
+        </div>
+    }
+   
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <td class="table-light">id</td>
+                <td class="table-light">Name</td>
+                <td class="table-light">Description</td>
+                <td class="table-light">price</td>
+                <td class="table-light">Quantity</td>
+                <td class="table-light">EnableSize</td>
+                <td class="table-light">operation</td>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Product product in Model)
+            {
+                <tr>
+                    <td>@product.Id</td>
+                    <td>@product.Name</td>
+                    <td>@product.Description</td>
+                    <td>@product.Price</td>
+                    <td>@product.Quantity</td>
+                    <td>@product.EnableSize</td>
+                    <td>
+
+
+                        <a class="btn btn-warning " asp-action="EditProduct" asp-route-Id="@product.Id" role="button">
+                            <span class="material-symbols-outlined">
+                                <i class="uil uil-edit"></i>
+                            </span>
+                        </a>
+                        <a class="btn btn-danger " asp-action="Delete" asp-route-Id="@product.Id" role="button">
+                            <span class="material-symbols-outlined">
+                                <i class="uil uil-minus-circle"></i>
+                            </span>
+                        </a>
+                       
+                    </td>
+
+                </tr>
+            }
+
+        </tbody>
+    </table>
+
+</div>

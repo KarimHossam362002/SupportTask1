@@ -1,0 +1,67 @@
+﻿@model IEnumerable<Blog>
+@*or use @model List<Blog>*@
+
+@{
+    Layout = "_DashBoardLayout";
+}
+<div class="overview">
+    <div class="title">
+        <i class="uil uil-tachometer-fast-alt"></i>
+        <span class="text">All Blogs</span>
+    </div>
+</div>
+<div>
+    @if (ViewBag.Update != null)
+    {
+        <div class="alert alert-success" role="alert">
+            @ViewBag.Update
+        </div>
+    }
+    @if (ViewBag.Delete != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            @ViewBag.Delete
+        </div>
+    }
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <td class="table-light">id</td>
+                <td class="table-light">Title</td>
+                <td class="table-light">Details</td>
+                <td class="table-light">operation</td>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Blog blog in Model)
+            {
+                <tr>
+                    <td>@blog.Id</td>
+                    <td>@blog.Title</td>
+                    <td>@blog.Detail</td>
+
+                    <td>
+
+
+                        <a class="btn btn-warning " asp-action="EditBlog" asp-route-Id="@blog.Id" role="button">
+                            <span class="material-symbols-outlined">
+                                <i class="uil uil-edit"></i>
+                            </span>
+                        </a>
+                        <a class="btn btn-danger " asp-action="DeleteBlog" asp-route-Id="@blog.Id" role="button">
+                            <span class="material-symbols-outlined">
+                                <i class="uil uil-minus-circle"></i>
+                            </span>
+                        </a>
+
+                    </td>
+
+                </tr>
+            }
+
+        </tbody>
+    </table>
+
+</div>

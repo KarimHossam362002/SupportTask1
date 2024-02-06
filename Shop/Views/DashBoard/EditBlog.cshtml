@@ -1,0 +1,79 @@
+﻿@model Blog
+@{
+    Layout = "_DashBoardLayout";
+}
+<div class="dash-content">
+    <div class="overview">
+        <div class="title">
+            <i class="uil uil-tachometer-fast-alt"></i>
+            <span class="text">Editing Blog</span>
+        </div>
+
+        <div>
+            <form asp-action="EditBlog" class="row" method="post">
+                <input type="hidden" asp-for="Id" />
+                <div class="mb-3">
+                    <label class="form-label">Blog Title</label>
+                    <input type="text"
+                           asp-for="Title"
+                           value="@Model.Title"
+                           class="form-control"
+                           placeholder="" />
+
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Blog Details</label>
+                    <textarea type="text"
+                              asp-for="Detail"
+                              id=""
+                              class="form-control"
+                              placeholder="">
+                        @Model.Detail
+                          </textarea>
+                </div>
+               
+               
+               
+
+                <div class="mb-3 col-lg-6">
+                    <label class="form-label">Category</label>
+                    <select class="form-select "
+                            asp-for="category.Id"
+                            id="">
+                        @{
+
+                            if (Model.category.Id == 1)
+                            {
+                                <option>Select one</option>
+                                <option selected value="1">Action</option>
+                                <option value="2">Romantic</option>
+                            }
+                            else if (Model.category.Id == 2)
+                            {
+                                <option>Select one</option>
+                                <option value="1">Action</option>
+                                <option selected value="2">Romantic</option>
+                            }
+                            else
+                            {
+                                <option selected>Select one</option>
+                                <option value="1">Action</option>
+                                <option value="2">Romantic</option>
+                            }
+                        }
+
+                    </select>
+                </div>
+
+                
+
+                <div class="col-lg-12 d-flex justify-content-center  ">
+
+                    <button type="submit" class="btn btn-primary">Submit</button>
+
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
