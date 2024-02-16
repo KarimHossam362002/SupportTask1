@@ -38,29 +38,12 @@
                 <div class="mb-3 col-lg-6">
                     <label class="form-label">Category</label>
                     <select class="form-select "
-                            asp-for="category.Id"
+                            asp-for="CategoryId"
                             id="">
-                        @{
 
-                            if (Model.category.Id == 1)
-                            {
-                                <option>Select one</option>
-                                <option selected value="1">Action</option>
-                                <option value="2">Romantic</option>
-                            }
-                            else if (Model.category.Id == 2)
-                            {
-                                <option>Select one</option>
-                                <option value="1">Action</option>
-                                <option selected value="2">Romantic</option>
-                            }
-                            else
-                            {
-                                <option selected>Select one</option>
-                                <option value="1">Action</option>
-                                <option value="2">Romantic</option>
-                            }
-                        }
+                        <option selected>Select one</option>
+                        <option value="1">Action</option>
+                        <option value="2">Romantic</option>
 
                     </select>
                 </div>

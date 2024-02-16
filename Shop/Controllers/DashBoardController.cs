@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Shop.Data;
 using Shop.Models;
 using System.Security.Cryptography.X509Certificates;
 
@@ -13,19 +15,31 @@ namespace Shop.Controllers
         private static List<Blog> _blogs = new List<Blog>();
         private static List<Company> _companies = new List<Company>();
         private static List<Category> _categories = new List<Category>();
+
+        private readonly ApplicationDbContext _DB;
+        public DashBoardController(ApplicationDbContext _db)
+        {
+            _DB = _db;
+            _companies.Add(new Company {Id = 1 , Name = "Nike" });
+            _companies.Add(new Company {Id = 2 , Name = "Adidas" });
+        }
         public IActionResult DashBoardIndex()
         {
             return View();
         }
         /*Product Actions*/
         #region ProductView
-        public IActionResult ProductIndex()
+        public IActionResult ProductIndex(int id)
         {
             string message = TempData["Update"] as string;
             string delete = TempData["Delete"] as string;
             ViewBag.Delete = delete;
             ViewBag.Update = message;
-            return View(_products);
+            var product = _DB.products.Include(p => p.company).ToList();
+            /*var product = _DB.products
+                           .Include(p => p.company)
+                           .SingleOrDefault(p => p.Id == id);*/
+            return View(product);
         }
         #endregion
         #region CreateProduct
@@ -38,18 +52,8 @@ namespace Shop.Controllers
         [HttpPost]
         public IActionResult Create(Product product)
         {
-            int id = 0;
-            if (_products.Count() == 0) {
-
-                id = 1;
-            }
-            else
-            {
-                 id = _products.Max(x => x.Id)+1;
-            }
-            product.Id = id;
-            _products.Add(product);
-            TempData["Create"] = "Data Created Successfully";
+            _DB.products.Add(product);
+            _DB.SaveChanges();
             return RedirectToAction("Create");
         }
         #endregion
@@ -58,30 +62,33 @@ namespace Shop.Controllers
 /*FirstorDefault single  single or default*/
         public IActionResult Delete(int id)
         {
-            Product ToDelete = _products.FirstOrDefault(x => x.Id == id);
-            _products.Remove(ToDelete);
+            Product? product = _DB.products.FirstOrDefault(p => p.Id == id);
             TempData["Delete"] = "Data Deleted Successfully";
+            _DB.products.Remove(product);
+            _DB.SaveChanges();
             return RedirectToAction("ProductIndex");
         }
         #endregion
         #region UpdateProduct
         public IActionResult EditProduct(int id)
         {
-            Product product = _products.FirstOrDefault(x => x.Id == id);
+            Product? product = _DB.products.Find(id);
             return View(product);
         }
         [HttpPost]
         public IActionResult EditProduct(Product prod)
         {
             /*return BadRequest("Here u r inside");*/
-            Product product = _products.FirstOrDefault(p => p.Id == prod.Id);
+            Product? product = _DB.products.Find(prod.Id);
             product.Name = prod.Name;
             product.Description = prod.Description;
             product.Price = prod.Price;
             product.EnableSize = prod.EnableSize;
             product.Quantity = prod.Quantity;
-            product.company = _companies.FirstOrDefault(x => x.Id == prod.company.Id);
+            product.CompanyId = prod.CompanyId;
             TempData["Update"] = "Data Updated Successfully";
+            _DB.products.Update(product);
+            _DB.SaveChanges();
             return RedirectToAction("ProductIndex");
         }
         #endregion
@@ -94,7 +101,8 @@ namespace Shop.Controllers
             string delete = TempData["Delete"] as string;
             ViewBag.Delete = delete;
             ViewBag.Update = message;
-            return View(_blogs);
+            var blog = _DB.blogs.Include(b => b.category).ToList();
+            return View(blog);
         }
         #endregion
         #region CreateBlog
@@ -107,28 +115,17 @@ namespace Shop.Controllers
         [HttpPost]
         public IActionResult CreateBlog(Blog blog)
         {
-            int id = 0;
-            if (_blogs.Count() == 0)
-            {
-
-                id = 1;
-            }
-            else
-            {
-                id = _blogs.Max(x => x.Id) + 1;
-            }
-            blog.Id = id;
-
-            _blogs.Add(blog);
-            TempData["Create"] = "Data Created Successfully";
-            return RedirectToAction("CreateBlog");
+            _DB.blogs.Add(blog);
+            _DB.SaveChanges();
+            return RedirectToAction("Create");
         }
         #endregion
         #region DeleteBlog
         public IActionResult DeleteBlog(int id)
         {
-            Blog ToDelete = _blogs.FirstOrDefault(x => x.Id == id);
-            _blogs.Remove(ToDelete);
+            Blog? blog = _DB.blogs.FirstOrDefault(b => b.Id == id);
+            _DB.blogs.Remove(blog);
+            _DB.SaveChanges();
             TempData["Delete"] = "Data Deleted Successfully";
             return RedirectToAction("BlogIndex");
         }
@@ -136,17 +133,19 @@ namespace Shop.Controllers
         #region UpdateBlog
         public IActionResult EditBlog(int id)
         {
-            Blog blog = _blogs.FirstOrDefault(x => x.Id == id);
+            Blog? blog = _DB.blogs.Find(id);
             return View(blog);
         }
         [HttpPost]
         public IActionResult EditBlog(Blog blg)
         {
             /*return BadRequest("Here u r inside");*/
-            Blog blog = _blogs.FirstOrDefault(p => p.Id == blg.Id);
+            Blog? blog = _DB.blogs.Find(blg.Id);
             blog.Title = blg.Title;
             blog.Detail = blg.Detail;
             blog.category = _categories.FirstOrDefault(x => x.Id == blg.category.Id);
+            _DB.blogs.Update(blog);
+            _DB.SaveChanges();
             TempData["Update"] = "Data Updated Successfully";
             return RedirectToAction("BlogIndex");
         }
