@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Shop.Data;
 using Shop.Models;
+using Shop.ViewModel;
 using System.Security.Cryptography.X509Certificates;
 
 namespace Shop.Controllers
@@ -47,11 +48,20 @@ namespace Shop.Controllers
         {
             string message = TempData["Create"] as string;
             ViewBag.Create = message;
-            return View();
+            var co = _DB.companies.ToList();
+            var productView = new ProductViewModel()
+            {
+                companies = co
+            };
+            return View(productView);
         }
         [HttpPost]
         public IActionResult Create(Product product)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(product);
+            }
             _DB.products.Add(product);
             _DB.SaveChanges();
             return RedirectToAction("Create");
@@ -72,12 +82,21 @@ namespace Shop.Controllers
         #region UpdateProduct
         public IActionResult EditProduct(int id)
         {
-            Product? product = _DB.products.Find(id);
-            return View(product);
+            /*Product? product = _DB.products.Find(id);*/
+            var co = _DB.companies.ToList();
+            var productView = new ProductViewModel()
+            {
+                companies = co
+            };
+            return View(productView);
         }
         [HttpPost]
         public IActionResult EditProduct(Product prod)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(prod);
+            }
             /*return BadRequest("Here u r inside");*/
             Product? product = _DB.products.Find(prod.Id);
             product.Name = prod.Name;
@@ -110,11 +129,21 @@ namespace Shop.Controllers
         {
             string message = TempData["Create"] as string;
             ViewBag.Create = message;
+            var cate = _DB.categories.ToList();
+            var blogView = new BlogViewModel()
+            {
+                categories = cate
+            };
+
             return View();
         }
         [HttpPost]
         public IActionResult CreateBlog(Blog blog)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(blog);
+            }
             _DB.blogs.Add(blog);
             _DB.SaveChanges();
             return RedirectToAction("Create");
@@ -139,6 +168,10 @@ namespace Shop.Controllers
         [HttpPost]
         public IActionResult EditBlog(Blog blg)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(blg);
+            }
             /*return BadRequest("Here u r inside");*/
             Blog? blog = _DB.blogs.Find(blg.Id);
             blog.Title = blg.Title;

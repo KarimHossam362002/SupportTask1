@@ -1,4 +1,4 @@
-﻿@model Blog
+﻿@model Shop.ViewModel.BlogViewModel
 @{
     Layout = "_DashBoardLayout";
 }
@@ -11,12 +11,12 @@
 
         <div>
             <form asp-action="EditBlog" class="row" method="post">
-                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="blog.Id" />
                 <div class="mb-3">
                     <label class="form-label">Blog Title</label>
                     <input type="text"
-                           asp-for="Title"
-                           value="@Model.Title"
+                           asp-for="blog.Title"
+                           value="@Model.blog.Title"
                            class="form-control"
                            placeholder="" />
 
@@ -24,11 +24,11 @@
                 <div class="mb-3">
                     <label class="form-label">Blog Details</label>
                     <textarea type="text"
-                              asp-for="Detail"
+                              asp-for="blog.Detail"
                               id=""
                               class="form-control"
                               placeholder="">
-                        @Model.Detail
+                        @Model.blog.Detail
                           </textarea>
                 </div>
                
@@ -38,12 +38,14 @@
                 <div class="mb-3 col-lg-6">
                     <label class="form-label">Category</label>
                     <select class="form-select "
-                            asp-for="CategoryId"
+                            asp-for="blog.CategoryId"
                             id="">
 
                         <option selected>Select one</option>
-                        <option value="1">Action</option>
-                        <option value="2">Romantic</option>
+                        @foreach(var cate in Model.categories)
+                        {
+                            <option value="@cate.Id">@cate.Name</option>
+                        }
 
                     </select>
                 </div>
